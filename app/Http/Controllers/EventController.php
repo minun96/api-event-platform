@@ -10,7 +10,6 @@ class EventController extends Controller
     // definisco $search e $category per la ricerca
     public function index(Request $request) {
 
-        // così avevo fatto la prima task, ora le ho unite
         // return Event::orderBy('id', 'asc')->paginate(20);
         
         $search = $request->input('q');
