@@ -20,4 +20,8 @@ class Event extends Model
         'price',
         'tickets_number',
     ];
+
+    public function category() {
+        return $this->belongsTo(Category::class);
+    }
 }
