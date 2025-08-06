@@ -2,32 +2,98 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CartItems;
+use App\Models\CartItem;
 use App\Models\Event;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class CartItemsController extends Controller
 {
 
-    public function index(User $user) {
-
-        dd(Auth::user());
-        $query = CartItems::where('user_id', $user->id);
+    //->PRENDO IL CARRELLO
+    public function index(Request $request) {
+        $user = $request->user(); 
+        $cartItems = CartItem::where('user_id', $user->id)->get();
+        Log::debug($user);
+        Log::info('Cart: ', ['cart_items' => $cartItems]);
+        return response()->json($cartItems, 200);
     }
 
+    //->AGGIUNGO ITEM AL CARRELLO
     public function add(Request $request) {
-
-        $request->validate([
+        $data = $request->validate([
             'event_id' => 'required|exists:events,id',
             'quantity' => 'required|integer|min:1',
         ]);
 
-        $event = Event::find($request->event_id);
+        $user = $request->user();
+        $existingCartItem = CartItem::where('user_id', $user->id)
+                                     ->where('event_id', $data['event_id'])
+                                     ->first();
+
+        // Se esiste il carrello aggiorno
+        if ($existingCartItem) {
+            $existingCartItem->increment('quantity', $data['quantity']);
+            return response()->json([
+                'message' => 'Cart updated!',
+                 'data' => $existingCartItem->fresh(),
+                ], 200);
+        
+        }
+        // Altrimenti creo
+        else {
+            $cartItem = CartItem::create([
+                'user_id' => $user->id,
+                'event_id' => $data['event_id'],
+                'quantity' => $data['quantity'],
+            ]);
+
+            Log::info('New item in cart.', ['user_id' => $user->id, 'event_id' => $data['event_id']]);
+
+            return response()->json([
+                'message' => 'Event added to cart!', 
+                'data' => $cartItem
+            ], 201); //uso 201  perché lo ho creato stavolta
+        }
+
     }
 
-    public function remove() {
-        // valida con event_id ma usa sometimes (https://laravel.com/docs/12.x/validation#validating-when-present) per la quantità
+    //->ELIMINO ITEM DAL CARRELLO O AGGIIORNO QUANTITÀ
+    public function remove(Request $request) {
+        $data = $request->validate([
+            'event_id' => 'required|exists:events,id',
+            'quantity' => 'sometimes|integer|min:1',
+        ]);
+        $user = $request->user();
+        $existingCartItem = CartItem::where('user_id', $user->id)
+                                     ->where('event_id', $data['event_id'])
+                                     ->first();
+        $quantityToRemove = $data['quantity'] ?? null;
+                                     
+        if (!$existingCartItem) {
+        return response()->json(['message' => 'Item non found.'], 404);
+        }
+        
+        // Se quantità è maggiore elimino carrello
+        if ($quantityToRemove === null || $quantityToRemove >= $existingCartItem->quantity) {
+            $existingCartItem->delete();
+            return response()->json([
+                'message' => 'Cart deleted!',
+                 'data' => $existingCartItem,
+                ], 200);
+
+        } 
+        // Altrimenti aggiorno
+        else {
+            $existingCartItem->decrement('quantity', $quantityToRemove);
+            return response()->json([
+                'message' => 'Cart updated!',
+                 'data' => $existingCartItem->fresh(),
+                ], 200);
+        }
+
     }
 }
