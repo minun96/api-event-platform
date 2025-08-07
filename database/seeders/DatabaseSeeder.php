@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Event;
 use App\Models\User;
@@ -17,7 +18,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        /* User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
@@ -26,6 +27,12 @@ class DatabaseSeeder extends Seeder
         foreach ($categories as $category)
             Category::create(['name' => $category]);
 
-        Event::factory()->count(300)->create();
+        Event::factory()->count(300)->create(); */
+
+        /* CartItem::create([
+            'user_id' => 3,
+            'event_id' => 1,
+            'quantity' => 2,
+        ]); */
     }
 }

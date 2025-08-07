@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Cart;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -19,11 +20,9 @@ class CartItemsController extends Controller
     }
 
     //->AGGIUNGO ITEM AL CARRELLO
-    public function add(Request $request) {
-        $data = $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'quantity' => 'required|integer|min:1',
-        ]);
+    public function add(Cart\AddItemRequest $request) {
+        // i dati sono già stati validati
+        $data = $request->validated();
 
         $user = $request->user();
         $existingCartItem = CartItem::where('user_id', $user->id)
@@ -58,11 +57,10 @@ class CartItemsController extends Controller
     }
 
     //->ELIMINO ITEM DAL CARRELLO O AGGIIORNO QUANTITÀ
-    public function remove(Request $request) {
-        $data = $request->validate([
-            'event_id' => 'required|exists:events,id',
-            'quantity' => 'sometimes|integer|min:1',
-        ]);
+    public function remove(Cart\RemoveItemRequest $request) {
+        // i dati sono già stati validati
+        $data = $request->validated();
+
         $user = $request->user();
         $existingCartItem = CartItem::where('user_id', $user->id)
                                      ->where('event_id', $data['event_id'])
