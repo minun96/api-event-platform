@@ -1,16 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\AuthController;
-use App\Http\Controllers\CartItemsController;
-use App\Http\Controllers\EventController;
-use App\Models\Event;
+use App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // -> ROTTE PUBBLICHE
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/register', [AuthController::class, 'register']);
-Route::get('events', [EventController::class, 'index']);
+Route::post('/login', [Api\AuthController::class, 'login']);
+Route::post('/register', [Api\AuthController::class, 'register']);
+Route::get('events', [Api\EventController::class, 'index']);
 
 // -> ROTTE PROTETTE
 Route::middleware('auth:sanctum')->group(function() {
@@ -22,8 +19,10 @@ Route::middleware('auth:sanctum')->group(function() {
     // Route::post('/logout', [AuthController::class, 'logout']);
 
     // cart
-    Route::get('cart', [CartItemsController::class, 'index']);
-    Route::post('cart/add', [CartItemsController::class, 'add']);
-    Route::post('cart/remove', [CartItemsController::class, 'remove']);
+    Route::get('cart', [Api\CartItemsController::class, 'index']);
+    Route::post('cart/add', [Api\CartItemsController::class, 'add']);
+    Route::post('cart/remove', [Api\CartItemsController::class, 'remove']);
+    Route::get('cart/summary', [Api\CheckoutController::class, 'summary']);
+    Route::post('cart/address', [Api\AddressController::class, 'store']);
 
 });
