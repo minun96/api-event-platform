@@ -23,7 +23,7 @@ class AddressRequest extends FormRequest
     {
         return [
             'recipient_name' => 'required|string',
-            'address' => 'required|string',
+            'street' => 'required|string',
             'city' => 'required|string',
             'zip_code' => 'required|string|max:10',
             'country' => 'required|string',

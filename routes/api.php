@@ -19,10 +19,16 @@ Route::middleware('auth:sanctum')->group(function() {
     // Route::post('/logout', [AuthController::class, 'logout']);
 
     // cart
-    Route::get('cart', [Api\CartItemsController::class, 'index']);
-    Route::post('cart/add', [Api\CartItemsController::class, 'add']);
-    Route::post('cart/remove', [Api\CartItemsController::class, 'remove']);
-    Route::get('cart/summary', [Api\CheckoutController::class, 'summary']);
-    Route::post('cart/address', [Api\AddressController::class, 'store']);
+    Route::prefix('cart')->group(function() {
+        Route::get('/', [Api\CartItemsController::class, 'index']);
+        Route::post('/add', [Api\CartItemsController::class, 'add']);
+        Route::post('/remove', [Api\CartItemsController::class, 'remove']);
+    });
+
+    // checkout
+    Route::prefix('checkout')->group(function() {
+        Route::get('/summary', [Api\CheckoutController::class, 'summary']);
+        Route::post('/address', [Api\AddressController::class, 'store']);
+    });
 
 });
