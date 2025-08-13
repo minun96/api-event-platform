@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('checkout')->group(function() {
         Route::get('/summary', [Api\CheckoutController::class, 'summary']);
         Route::post('/address', [Api\AddressController::class, 'store']);
+        Route::post('/payment', [Api\PaymentController::class, 'payment']);
     });
 
 });
