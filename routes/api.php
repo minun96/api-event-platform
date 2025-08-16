@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/summary', [Api\CheckoutController::class, 'summary']);
         Route::post('/address', [Api\AddressController::class, 'store']);
         Route::post('/payment', [Api\PaymentController::class, 'payment']);
+        Route::post('/payment', [Api\ConfirmController::class, 'confirm']);
     });
 
 });
