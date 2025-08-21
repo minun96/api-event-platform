@@ -14,7 +14,7 @@ class CartItemsController extends Controller
     //->PRENDO IL CARRELLO
     public function index(Request $request) {
         $user = $request->user(); 
-        $cartItems = CartItem::where('user_id', $user->id)->get();
+        $cartItems = CartItem::with('event')->where('user_id', $user->id)->get();
         Log::debug($user);
         Log::info('Cart: ', ['cart_items' => $cartItems]);
         return response()->json($cartItems, 200);

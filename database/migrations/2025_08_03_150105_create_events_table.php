@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('artist');
             $table->dateTime('event_date');
             $table->string('city');
-            $table->decimal('price');
+            $table->decimal('price', 10, 2);
             $table->unsignedInteger('tickets_number');
             $table->timestamps();
         });

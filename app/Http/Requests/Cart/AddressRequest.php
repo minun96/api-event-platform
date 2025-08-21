@@ -22,11 +22,11 @@ class AddressRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'recipient_name' => 'required|string',
-            'street' => 'required|string',
-            'city' => 'required|string',
+            'recipient_name' => 'required|string|max:255',
+            'street' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
             'zip_code' => 'required|string|max:10',
-            'country' => 'required|string',
+            'country' => 'required|string|max:255',
         ];
     }
 }

@@ -15,7 +15,7 @@ class CheckoutController extends Controller
         if ($cartItems->isEmpty()) {
             return response()->json([
                 'message' => 'Il tuo carrello è vuoto.'
-            ], 422);
+            ], 200);
         }
 
         $totalAmount = $cartItems->sum(function ($item) {
