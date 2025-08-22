@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -13,17 +14,13 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function login(Request $request) {
+    public function login(Api\LoginRequest $request) {
 
-        // dati da validare
-        $request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required',
-        ]);
+        $credentials = $request->validated();
 
         // user e controllo user e hash della password
-        $user = User::where('email', $request->email)->first();
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        $user = User::where('email', $credentials['email'])->first();
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
             throw ValidationException::withMessages([
                 'email' => 'Invalid credentials'
             ]);
@@ -39,24 +36,20 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(Request $request) {
+    public function logout(Request $request)
+    {
+        // Revoca il bearer token che l'utente sta usando per questa richiesta
+        $user = $request->user();
+        $user->tokens()->where('id', $user->currentAccessToken()->id)->delete();
 
-        // regola locale e produzione
-        $localPassRule = 'required|string|min:8';
-        $prodPassRule = ['required', 'confirmed',
-            Password::min(8)
-                ->mixedCase()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
-        ];
+        return response()->json([
+            'message' => 'Logout effettuato con successo.'
+        ], 200);
+    }
 
-        // dati da validare
-        $data = $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|string|email|unique:users',
-            'password' => App::environment('local') ? $localPassRule : $prodPassRule,
-        ]);
+    public function register(Api\RegisterRequest $request) {
+
+        $data = $request->validated();
 
         // transazione db con dati
         $result = DB::transaction(function() use ($data) {

@@ -15,8 +15,7 @@ Route::middleware('auth:sanctum')->group(function() {
     return $request->user();
     });
 
-    // dopo ricorda di aggiungere la rotta di logout
-    // Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [Api\AuthController::class, 'logout']);
 
     // cart
     Route::prefix('cart')->group(function() {
@@ -30,7 +29,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/summary', [Api\CheckoutController::class, 'summary']);
         Route::post('/address', [Api\AddressController::class, 'store']);
         Route::post('/payment', [Api\PaymentController::class, 'payment']);
-        Route::post('/confirm', [Api\ConfirmController::class, 'confirm']);
+        Route::post('/confirm', [Api\ConfirmController::class, 'store']);
     });
 
 });

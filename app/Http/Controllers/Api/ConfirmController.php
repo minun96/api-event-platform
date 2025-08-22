@@ -63,11 +63,11 @@ class ConfirmController extends Controller
         );
 
         // avvio il job
-        ProcessPayment::dispatch($payment);
+        ProcessPayment::dispatch($payment)->afterCommit(); // afterCommit per essere sicuri che le transaction siano terminate
 
         return response()->json([
             'message' => 'Ordine creato con successo. Il pagamento è in elaborazione.',
-            'data' => $payment->order()->with('items.event')->first(),
+            'data' => $payment->order()->with('orderItems.event')->first(),
         ], 201);
     }
 }
