@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cart;
+use App\Http\Requests\Api;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -21,7 +21,7 @@ class CartItemsController extends Controller
     }
 
     //->AGGIUNGO ITEM AL CARRELLO
-    public function add(Cart\AddItemRequest $request) {
+    public function add(Api\AddItemRequest $request) {
         // i dati sono già stati validati
         $data = $request->validated();
 
@@ -58,7 +58,7 @@ class CartItemsController extends Controller
     }
 
     //->ELIMINO ITEM DAL CARRELLO O AGGIIORNO QUANTITÀ
-    public function remove(Cart\RemoveItemRequest $request) {
+    public function remove(Api\RemoveItemRequest $request) {
         // i dati sono già stati validati
         $data = $request->validated();
 

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Cart\AddressRequest;
+use App\Http\Requests\Api\AddressRequest;
 use App\Models\Address;
 
 class AddressController extends Controller
